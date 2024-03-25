@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Zuku Joke</h1>
+    <p id="joke"></p>
+    <button>Logout</button>
+
+    <script>
+        let h1 = document.querySelector('h1');
+        let joke_box = document.querySelector('#joke');
+        let logoutBtn = document.querySelector('button');
+
+        let token = localStorage.getItem('token');
+
+      async function joke(){
+            try{
+
+                let response =  await fetch("https://instagram-express-app.vercel.app/api/auth/zuku",{
+                        method: "GET",
+                        headers:{
+                            "Content-Type": "application/json",
+                            "authorization": `Bearer ${token}`
+                        }
+                })
+                let res = await response.json();
+                joke_box.innerHTML = res.data.message;
+
+
+            }
+            catch(err){
+                console.log(err);
+            }
+        }
+        joke()
+
+        logoutBtn.addEventListener("click", logout)
+
+        async function logout(){
+            try{
+           let response = await fetch("https://instagram-express-app.vercel.app/api/auth/logout",{
+                method: "delete",
+                headers:{
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${token}`
+                }
+            })
+            let res = await response.json();
+            if(res.success == true){
+                localStorage.removeItem('token');
+                window.location.href = "./login.html";
+            }
+        }
+        catch(err){
+            console.log(err);   
+         }
+        }
+         
+    </script>
+</body>
+</html>
